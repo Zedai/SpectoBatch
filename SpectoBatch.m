@@ -128,6 +128,8 @@ function next_Callback(hObject, eventdata, handles)
 
 clear sound;
 
+
+
 [x, ~] = size(handles.files);
 
 x = x - handles.index;
@@ -138,10 +140,15 @@ if x > 0
     spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
     ylim([0,10]);
     title(handles.files(1 + handles.index).name);
+    %     handles.dateL.String = handles.files(1 + handles.index).date;
+    set(handles.dateL, 'String', handles.files(1+handles.index).date);
+
+    
 else
     axes(handles.axes1);
     plot(0:.1:10);
     title('You Aint Got No Alibi, Yea Nicky');
+    handles.dateL.String = 'No Date';
 end
 if x > 1
     axes(handles.axes2);
@@ -149,13 +156,18 @@ if x > 1
     spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
     ylim([0,10]);
     title(handles.files(2 + handles.index).name);
+    handles.dateR.String = handles.files(2 + handles.index).date;
 else
     axes(handles.axes2);
     plot(0:.1:10);
     title('You Aint Got No Alibi, Yea Nicky');
+    handles.dateR.String = 'No Date';
 end
 handles.index = handles.index + 2;
+
+
 guidata(hObject, handles);
+
 
 
 
@@ -191,13 +203,15 @@ if x > 0
     ylim([0,10]);
     colormap jet;
     title(handles.files(1).name);
+    handles.dateL.String = handles.files(1).date;
     
-%     handles.player = audioplayer(data, fs);
+    %     handles.player = audioplayer(data, fs);
     
 else
     axes(handles.axes1);
     plot(0:.1:10);
     title('You Aint Got No Alibi, Yea Nicky');
+    handles.dateL.String = 'No Date';
 end
 if x > 1
     axes(handles.axes2);
@@ -205,10 +219,12 @@ if x > 1
     spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
     ylim([0,10]);
     title(handles.files(2).name);
+    handles.dateR.String = handles.files(2).date;
 else
     axes(handles.axes2);
     plot(0:.1:10);
     title('You Aint Got No Alibi, Yea Nicky');
+    handles.dateR.String = 'No Date';
 end
 
 handles.index = 2;
@@ -246,10 +262,12 @@ if x > 0
     spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
     ylim([0,10]);
     title(handles.files(1 + handles.index).name);
+    handles.dateL.String = handles.files(1 + handles.index).date;
 else
     axes(handles.axes1);
     plot(0:.1:10);
     title('You Aint Got No Alibi, Yea Nicky');
+    handles.dateL.String = 'No Date';
 end
 if x > 1
     axes(handles.axes2);
@@ -257,10 +275,12 @@ if x > 1
     spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
     ylim([0,10]);
     title(handles.files(2 + handles.index).name);
+    handles.dateR.String = handles.files(2 + handles.index).date;
 else
     axes(handles.axes2);
     plot(0:.1:10);
     title('You Aint Got No Alibi, Yea Nicky');
+    handles.dateR.String = 'No Date';
 end
 handles.index = handles.index + 2;
 guidata(hObject, handles);
@@ -288,7 +308,7 @@ function playR_Callback(hObject, eventdata, handles)
 % hObject    handle to playR (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% 
+%
 % stop(handles.player);
 % [data, fs] = audioread(handles.files(handles.index).name);
 % player = audioplayer(data, fs);
