@@ -22,7 +22,7 @@ function varargout = SpectoBatch(varargin)
 
 % Edit the above text to modify the response to help SpectoBatch
 
-% Last Modified by GUIDE v2.5 23-Jul-2020 23:14:00
+% Last Modified by GUIDE v2.5 24-Jul-2020 15:20:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -67,7 +67,7 @@ handles.output = hObject;
 % saveas(gcf, 'saiaio.png')
 % plot(saiaio)
 
-
+wfiles = [];
 
 
 % axes(handles.axes1);
@@ -147,7 +147,7 @@ if x > 0
 else
     axes(handles.axes1);
     plot(0:.1:10);
-    title('You Aint Got No Alibi, Yea Nicky');
+    title('No Spectrogram');
     handles.dateL.String = 'No Date';
 end
 if x > 1
@@ -160,7 +160,7 @@ if x > 1
 else
     axes(handles.axes2);
     plot(0:.1:10);
-    title('You Aint Got No Alibi, Yea Nicky');
+    title('No Spectrogram');
     handles.dateR.String = 'No Date';
 end
 handles.index = handles.index + 2;
@@ -210,7 +210,7 @@ if x > 0
 else
     axes(handles.axes1);
     plot(0:.1:10);
-    title('You Aint Got No Alibi, Yea Nicky');
+    title('No Spectrogram');
     handles.dateL.String = 'No Date';
 end
 if x > 1
@@ -223,7 +223,7 @@ if x > 1
 else
     axes(handles.axes2);
     plot(0:.1:10);
-    title('You Aint Got No Alibi, Yea Nicky');
+    title('No Spectrogram');
     handles.dateR.String = 'No Date';
 end
 
@@ -266,7 +266,7 @@ if x > 0
 else
     axes(handles.axes1);
     plot(0:.1:10);
-    title('You Aint Got No Alibi, Yea Nicky');
+    title('No Spectrogram');
     handles.dateL.String = 'No Date';
 end
 if x > 1
@@ -279,7 +279,7 @@ if x > 1
 else
     axes(handles.axes2);
     plot(0:.1:10);
-    title('You Aint Got No Alibi, Yea Nicky');
+    title('No Spectrogram');
     handles.dateR.String = 'No Date';
 end
 handles.index = handles.index + 2;
@@ -327,3 +327,17 @@ function stahp_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 clear sound;
+
+
+% --- Executes on button press in saveL.
+function saveL_Callback(hObject, eventdata, handles)
+% hObject    handle to saveL (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in saveR.
+function saveR_Callback(hObject, eventdata, handles)
+% hObject    handle to saveR (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
