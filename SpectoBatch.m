@@ -22,7 +22,7 @@ function varargout = SpectoBatch(varargin)
 
 % Edit the above text to modify the response to help SpectoBatch
 
-% Last Modified by GUIDE v2.5 24-Jul-2020 15:20:18
+% Last Modified by GUIDE v2.5 30-Jul-2020 18:33:38
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,6 +60,9 @@ function SpectoBatch_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to SpectoBatch (see VARARGIN)
 
 % Choose default command line output for SpectoBatch
+
+handles.sD = NaN;
+
 handles.output = hObject;
 
 
@@ -142,7 +145,7 @@ if x > 0
     title(handles.files(1 + handles.index).name);
     %     handles.dateL.String = handles.files(1 + handles.index).date;
     set(handles.dateL, 'String', handles.files(1+handles.index).date);
-
+    
     
 else
     axes(handles.axes1);
@@ -187,49 +190,53 @@ function load_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 d = uigetdir(pwd, 'Select a folder');
-handles.files = dir(fullfile(d, '*.wav'));
-handles.dir.String = d;
-handles.index = 0;
 
-cd(d);
-
-
-[x, ~] = size(handles.files);
-
-if x > 0
-    axes(handles.axes1);
-    [data, fs] = audioread(handles.files(1).name);
-    spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
-    ylim([0,10]);
-    colormap jet;
-    title(handles.files(1).name);
-    handles.dateL.String = handles.files(1).date;
+if d ~= 0
     
-    %     handles.player = audioplayer(data, fs);
     
-else
-    axes(handles.axes1);
-    plot(0:.1:10);
-    title('No Spectrogram');
-    handles.dateL.String = 'No Date';
+    handles.files = dir(fullfile(d, '*.wav'));
+    handles.dir.String = d;
+    handles.index = 0;
+    
+    cd(d);
+    
+    
+    [x, ~] = size(handles.files);
+    
+    if x > 0
+        axes(handles.axes1);
+        [data, fs] = audioread(handles.files(1).name);
+        spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
+        ylim([0,10]);
+        colormap jet;
+        title(handles.files(1).name);
+        handles.dateL.String = handles.files(1).date;
+        
+        %     handles.player = audioplayer(data, fs);
+        
+    else
+        axes(handles.axes1);
+        plot(0:.1:10);
+        title('No Spectrogram');
+        handles.dateL.String = 'No Date';
+    end
+    if x > 1
+        axes(handles.axes2);
+        [data, fs] = audioread(handles.files(2).name);
+        spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
+        ylim([0,10]);
+        title(handles.files(2).name);
+        handles.dateR.String = handles.files(2).date;
+    else
+        axes(handles.axes2);
+        plot(0:.1:10);
+        title('No Spectrogram');
+        handles.dateR.String = 'No Date';
+    end
+    
+    handles.index = 2;
+    
 end
-if x > 1
-    axes(handles.axes2);
-    [data, fs] = audioread(handles.files(2).name);
-    spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
-    ylim([0,10]);
-    title(handles.files(2).name);
-    handles.dateR.String = handles.files(2).date;
-else
-    axes(handles.axes2);
-    plot(0:.1:10);
-    title('No Spectrogram');
-    handles.dateR.String = 'No Date';
-end
-
-handles.index = 2;
-
-
 
 guidata(hObject, handles);
 
@@ -335,9 +342,54 @@ function saveL_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+if isnan(handles.sD)
+    sDir_Callback(hObject, eventdata, handles);
+    
+end
+
+
+
 
 % --- Executes on button press in saveR.
 function saveR_Callback(hObject, eventdata, handles)
 % hObject    handle to saveR (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in saveAsL.
+function saveAsL_Callback(hObject, eventdata, handles)
+% hObject    handle to saveAsL (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in saveAsR.
+function saveAsR_Callback(hObject, eventdata, handles)
+% hObject    handle to saveAsR (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in sDir.
+function sDir_Callback(hObject, eventdata, handles)
+% hObject    handle to sDir (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+s = uigetdir(pwd, 'Select a folder');
+
+if s ~= 0
+    handles.sD = s;
+    handles.sDirT.String = handles.sD;
+end
+
+
+guidata(hObject, handles);
+
+
+
+
+
+
+
+
