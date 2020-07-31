@@ -349,12 +349,46 @@ end
 
 
 
+[sdata, sfs] = audioread(handles.files(handles.index - 1).name);
+
+cd(handles.sD);
+
+audiowrite(handles.files(handles.index - 1).name, sdata, sfs); 
+
+cd(handles.dir.String);
+
+guidata(hObject, handles);
+
+
+
+
 
 % --- Executes on button press in saveR.
 function saveR_Callback(hObject, eventdata, handles)
 % hObject    handle to saveR (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+% if isnan(handles.sD)
+%     sDir_Callback(hObject, eventdata, handles);
+%     
+% end
+
+if isnan(handles.sD)
+    sDir_Callback(hObject, eventdata, handles);    
+end
+
+
+[sdata, sfs] = audioread(handles.files(handles.index).name);
+
+cd(handles.sD);
+
+audiowrite(handles.files(handles.index).name, sdata, sfs); 
+
+cd(handles.dir.String);
+
+guidata(hObject, handles);
+
 
 
 % --- Executes on button press in saveAsL.
@@ -363,12 +397,49 @@ function saveAsL_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% s = uigetdir(pwd, 'Select a folder');
+% 
+% 
+% guidata(hObject, handles);
+
+[filename, path] = uiputfile(handles.files(handles.index-1).name);
+
+if path ~= 0
+    
+    [data, fs] = audioread(handles.files(handles.index - 1).name);
+    cd(path);
+    audiowrite(filename, data, fs);
+    
+end
+
+
+cd(handles.dir.String);
+
+guidata(hObject, handles);
+
+
+
 
 % --- Executes on button press in saveAsR.
 function saveAsR_Callback(hObject, eventdata, handles)
 % hObject    handle to saveAsR (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+[filename, path] = uiputfile(handles.files(handles.index).name);
+
+if path ~= 0
+    
+    [data, fs] = audioread(handles.files(handles.index).name);
+    cd(path);
+    audiowrite(filename, data, fs);
+    
+end
+
+
+cd(handles.dir.String);
+
+guidata(hObject, handles);
 
 
 % --- Executes on button press in sDir.
