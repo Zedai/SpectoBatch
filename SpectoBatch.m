@@ -22,7 +22,7 @@ function varargout = SpectoBatch(varargin)
 
 % Edit the above text to modify the response to help SpectoBatch
 
-% Last Modified by GUIDE v2.5 30-Jul-2020 18:33:38
+% Last Modified by GUIDE v2.5 03-Aug-2020 13:02:10
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -63,8 +63,21 @@ function SpectoBatch_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.sD = NaN;
 
+handles.Tutor = NaN;
+
+handles.index = NaN;
+
 handles.output = hObject;
 
+handles.valid1 = false;
+
+handles.valid2 = false;
+
+handles.hasTutor = false;
+
+handles.dataIndex = 1;
+
+handles.data = struct('name', 'tutor', 'sim', 'acc');
 
 % spectrogram(data, hamming(1024), 1000, 1024,fs,'yaxis');
 % saveas(gcf, 'saiaio.png')
@@ -138,6 +151,7 @@ clear sound;
 x = x - handles.index;
 
 if x > 0
+    handles.valid1 = true;
     axes(handles.axes1);
     [data, fs] = audioread(handles.files(1 + handles.index).name);
     spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
@@ -148,12 +162,14 @@ if x > 0
     
     
 else
+    handles.valid1 = false;
     axes(handles.axes1);
     plot(0:.1:10);
     title('No Spectrogram');
     handles.dateL.String = 'No Date';
 end
 if x > 1
+    handles.valid2 = true;
     axes(handles.axes2);
     [data, fs] = audioread(handles.files(2 + handles.index).name);
     spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
@@ -161,6 +177,7 @@ if x > 1
     title(handles.files(2 + handles.index).name);
     handles.dateR.String = handles.files(2 + handles.index).date;
 else
+    handles.valid2 = false;
     axes(handles.axes2);
     plot(0:.1:10);
     title('No Spectrogram');
@@ -204,6 +221,7 @@ if d ~= 0
     [x, ~] = size(handles.files);
     
     if x > 0
+        handles.valid1 = true;
         axes(handles.axes1);
         [data, fs] = audioread(handles.files(1).name);
         spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
@@ -215,12 +233,14 @@ if d ~= 0
         %     handles.player = audioplayer(data, fs);
         
     else
+        handles.valid1 = false;
         axes(handles.axes1);
         plot(0:.1:10);
         title('No Spectrogram');
         handles.dateL.String = 'No Date';
     end
     if x > 1
+        handles.valid2 = true;
         axes(handles.axes2);
         [data, fs] = audioread(handles.files(2).name);
         spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
@@ -228,6 +248,7 @@ if d ~= 0
         title(handles.files(2).name);
         handles.dateR.String = handles.files(2).date;
     else
+        handles.valid2 = false;
         axes(handles.axes2);
         plot(0:.1:10);
         title('No Spectrogram');
@@ -264,6 +285,7 @@ handles.index = handles.index - 4;
 x = x - handles.index;
 
 if x > 0
+    handles.valid1 = true;
     axes(handles.axes1);
     [data, fs] = audioread(handles.files(1 + handles.index).name);
     spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
@@ -271,12 +293,14 @@ if x > 0
     title(handles.files(1 + handles.index).name);
     handles.dateL.String = handles.files(1 + handles.index).date;
 else
+    handles.valid1 = false;
     axes(handles.axes1);
     plot(0:.1:10);
     title('No Spectrogram');
     handles.dateL.String = 'No Date';
 end
 if x > 1
+    handles.valid2 = true;
     axes(handles.axes2);
     [data, fs] = audioread(handles.files(2 + handles.index).name);
     spectrogram(data(:,1), hamming(1024), 1000, 1024,fs,'yaxis');
@@ -284,6 +308,7 @@ if x > 1
     title(handles.files(2 + handles.index).name);
     handles.dateR.String = handles.files(2 + handles.index).date;
 else
+    handles.valid2 = false;
     axes(handles.axes2);
     plot(0:.1:10);
     title('No Spectrogram');
@@ -458,8 +483,92 @@ end
 guidata(hObject, handles);
 
 
+% --- Executes on button press in tSong.
+function tSong_Callback(hObject, eventdata, handles)
+% hObject    handle to tSong (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+[tut, path] = uigetfile('samba.wav');
+if tut ~= 0
+    handles.hasTutor = true;
+    handles.Tutor = SAT_sound([path tut]);
+    handles.tutS.String = tut;
+end
 
 
+
+guidata(hObject, handles);
+
+
+
+
+
+% --- Executes on button press in simL.
+function simL_Callback(hObject, eventdata, handles)
+% hObject    handle to simL (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% x = SAT_sound(handles.files
+
+
+if ~handles.hasTutor
+    errordlg('Select Tutor Song First');
+elseif ~handles.valid1
+    errordlg('Left File Not Selected');
+else 
+    
+    clear SAT_score;
+    
+    sound1 = SAT_sound([handles.dir.String '\' handles.files(handles.index - 1).name]);
+    SAT_similarity(sound1, handles.Tutor);
+    
+    handles.data(handles.dataIndex).name = handles.files(handles.index - 1).name;
+    handles.data(handles.dataIndex).tutor = handles.tutS.String;
+    
+    pause(1000);
+     while (~exist('SAT_score', 'var'))
+     end
+    
+    handles.data(handles.dataIndex).sim = SAT_score.similarity;
+    handles.data(handles.dataIndex).acc = SAT_score.accuracy;
+    
+    clear SAT_score;
+    
+    handles.dataIndex = handles.dataIndex + 1;
+end
+
+
+
+
+
+guidata(hObject, handles);
+
+
+
+% --- Executes on button press in simR.
+function simR_Callback(hObject, eventdata, handles)
+% hObject    handle to simR (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in saveAll.
+function saveAll_Callback(hObject, eventdata, handles)
+% hObject    handle to saveAll (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+[filename, path] = uiputfile('output.mat');
+
+if path ~= 0
+    cd(path);
+    save(filename, handles.data);
+end
+
+
+cd(handles.dir.String);
+
+guidata(hObject, handles);
 
 
 
